@@ -4,6 +4,8 @@ import ClientAdmFacadeInterface from "../../../client-adm/facade/client-adm.faca
 import ProductAdmFacade from "../../../product-adm/facade/product-adm.facade";
 import ProductAdmFacadeInterface from "../../../product-adm/facade/product-adm.facade.interface";
 import StoreCatalogFacadeInterface from "../../../store-catalog/facade/store-catalog.facade.interface";
+import Client from "../../domain/domain/client.entity";
+import Order from "../../domain/domain/order.entity";
 import Product from "../../domain/domain/product.entity";
 import { PlaceOrderInputDto, PlaceOrderOutputDto } from "./place-order.dto";
 
@@ -27,6 +29,22 @@ export class PlaceOrderUseCase implements UseCaseInterface {
     }
 
     await this.validateProducts(input);
+
+    const products = await Promise.all(
+      input.products.map((p) => this.getProduct(p.productId))
+    )
+
+    const myClient = new Client({
+      id: new Id(client.id),
+      name: client.name,
+      email: client.email,
+      address: client.address,
+    });
+
+    const order = new Order({
+      client: myClient,
+      products,
+    });
 
     return {
       id: "",
