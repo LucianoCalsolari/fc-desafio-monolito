@@ -1,4 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
+import Id from "../../@shared/domain/value-object/id.value-object";
+import AddressClientDto from "../domain/value-object/AddressClientDto";
 import ClientAdmFacadeFactory from "../factory/client-adm.facade.factory";
 import { ClientModel } from "../repository/client.model";
 import ClientRepository from "../repository/client.repository";
@@ -26,18 +28,14 @@ describe("ClientAdmFacade test", () => {
   });
 
   it("should create a client", async () => {
-    const repository = new ClientRepository();
-    const addUsecase = new AddClientUseCase(repository);
-    const facade = new ClientAdmFacade({
-      addUsecase: addUsecase,
-      findUsecase: undefined,
-    });
+    const facade =  ClientAdmFacadeFactory.create();
 
     const input = {
-      id: "1",
+      id: new Id('1'),
       name: "Client 1",
+      document: 'doc',
       email: "x@x.com",
-      address: "Address 1",
+      address: new AddressClientDto('street', '1', 'city', 'zipcode', 'state', 'complement')
     };
 
     await facade.add(input);
@@ -62,10 +60,11 @@ describe("ClientAdmFacade test", () => {
     const facade = ClientAdmFacadeFactory.create();
 
     const input = {
-      id: "1",
+      id: new Id('1'),
       name: "Client 1",
+      document: 'doc',
       email: "x@x.com",
-      address: "Address 1",
+      address: new AddressClientDto('street', '1', 'city', 'zipcode', 'state', 'complement')
     };
 
     await facade.add(input);

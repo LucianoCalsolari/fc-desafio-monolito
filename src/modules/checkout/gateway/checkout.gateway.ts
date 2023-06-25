@@ -1,4 +1,4 @@
-import { Order } from "sequelize/types/model";
+import Order from "../domain/domain/order.entity";
 
 export default interface CheckoutGateway{
     addOrder(order: Order): Promise<void>;

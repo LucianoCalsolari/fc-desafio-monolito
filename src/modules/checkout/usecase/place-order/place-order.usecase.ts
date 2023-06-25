@@ -9,6 +9,7 @@ import StoreCatalogFacadeInterface from "../../../store-catalog/facade/store-cat
 import Client from "../../domain/domain/client.entity";
 import Order from "../../domain/domain/order.entity";
 import Product from "../../domain/domain/product.entity";
+import AddressDto from "../../domain/domain/value-object/AddressDto";
 import CheckoutGateway from "../../gateway/checkout.gateway";
 import { PlaceOrderInputDto, PlaceOrderOutputDto } from "./place-order.dto";
 
@@ -16,7 +17,7 @@ export class PlaceOrderUseCase implements UseCaseInterface {
   private _clientFacade: ClientAdmFacadeInterface;
   private _productFacade: ProductAdmFacadeInterface;
   private _catalogFacade: StoreCatalogFacadeInterface;
-  private _repository: CheckoutGateway;
+  private _checkoutRepository: CheckoutGateway;
   private _invoiceFacade: InvoiceFacadeInterface;
   private _paymentFacade: PaymentFacadeInterface;
 
@@ -29,7 +30,7 @@ export class PlaceOrderUseCase implements UseCaseInterface {
     this._clientFacade = clientFacade;
     this._productFacade = productFacade;
     this._catalogFacade = catalogFacade;
-    this._repository = repository;
+    this._checkoutRepository = repository;
     this._invoiceFacade = invoiceFacade;
     this._paymentFacade = paymentFacade;
   }
@@ -50,12 +51,12 @@ export class PlaceOrderUseCase implements UseCaseInterface {
       id: new Id(client.id),
       name: client.name,
       email: client.email,
-      address: client.street,
+      address: new AddressDto(client.city, client.complement, client.number, client.state, client.street, client.zipCode),
     });
 
     const order = new Order({
       client: myClient,
-      products,
+      products: products,
     });
 
     const payment = await this._paymentFacade.process({
@@ -70,6 +71,7 @@ export class PlaceOrderUseCase implements UseCaseInterface {
           document: client.document,
           street: client.street,
           complement: client.complement,
+          number:  client.number,
           city: client.city,
           state: client.state,
           zipCode: client.zipCode,
@@ -83,7 +85,7 @@ export class PlaceOrderUseCase implements UseCaseInterface {
         }) : null;
 
     payment.status === "approved" && order.approved();
-    this._repository.addOrder(order);
+    this._checkoutRepository.addOrder(order);
 
     return {
       id: order.id.id,
