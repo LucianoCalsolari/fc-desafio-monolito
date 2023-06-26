@@ -1,5 +1,5 @@
 import Id from "../../@shared/domain/value-object/id.value-object";
-import AddressClientDto from "../domain/value-object/AddressClientDto";
+import AddressClientDto from "../domain/value-object/address-client.dto";
 
 export interface AddClientFacadeInputDto{
     id?: Id;

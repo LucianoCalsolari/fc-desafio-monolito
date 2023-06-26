@@ -1,12 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 import Id from "../../@shared/domain/value-object/id.value-object";
-import AddressClientDto from "../domain/value-object/AddressClientDto";
+import AddressClientDto from "../domain/value-object/address-client.dto";
 import ClientAdmFacadeFactory from "../factory/client-adm.facade.factory";
 import { ClientModel } from "../repository/client.model";
-import ClientRepository from "../repository/client.repository";
-import AddClientUseCase from "../usecase/add-client/add-client.usecase";
-import FindClientUseCase from "../usecase/find-client/find-client.usecase";
-import ClientAdmFacade from "./client-adm.facade";
 
 describe("ClientAdmFacade test", () => {
   let sequelize: Sequelize;
