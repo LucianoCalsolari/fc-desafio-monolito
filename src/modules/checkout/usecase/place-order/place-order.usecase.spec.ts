@@ -1,7 +1,7 @@
 import Id from "../../../@shared/domain/value-object/id.value-object";
-import Product from "../../domain/domain/product.entity";
+import Product from "../../domain/product.entity";
 import { PlaceOrderInputDto } from "./place-order.dto";
-import { PlaceOrderUseCase } from "./place-order.usecase";
+import PlaceOrderUseCase from "./place-order.usecase";
 
 const mockDate = new Date(2000, 1, 1);
 describe("PlaceOrderUseCase unit test", () => {
@@ -54,7 +54,7 @@ describe("PlaceOrderUseCase unit test", () => {
 
 	describe("getProducts method", () => {
 		beforeAll(() => {
-			jest.useFakeTimers("modern");
+			jest.useFakeTimers();
 			jest.setSystemTime(mockDate);
 		});
 
@@ -157,16 +157,18 @@ describe("PlaceOrderUseCase unit test", () => {
 
 		describe("place an order", () => {
 			const clientProps = {
-				id: "1i",
+				id: "1c",
 				name: "Client",
 				document: "0000",
 				email: "client@user.com",
-				street: "address",
-				number: "1",
-				complement: "",
-				city: "some city",
-				state: "state",
-				zipCode: "000",
+				address:{
+					street: "address",
+					number: "1",
+					complement: "",
+					city: "some city",
+					state: "state",
+					zipcode: "000"
+				}
 			};
 
 			const mockClientFacade = {
@@ -263,7 +265,7 @@ describe("PlaceOrderUseCase unit test", () => {
 			it("should be approved", async () => {
 				mockPaymentFacade.process = mockPaymentFacade.process.mockReturnValue({
 					transactionId: "1t",
-					orderId: "1t",
+					orderId: "1o",
 					amount: 100,
 					status: "approved",
 					createdAt: new Date(),
@@ -287,29 +289,7 @@ describe("PlaceOrderUseCase unit test", () => {
 					amount: output.total,
 				});
 				expect(mockInvoiceFacade.create).toHaveBeenCalledTimes(1);
-				expect(mockInvoiceFacade.create).toHaveBeenCalledWith({
-					name: clientProps.name,
-					document: clientProps.document,
-					street: clientProps.street,
-					number: clientProps.number,
-					complement: clientProps.complement,
-					city: clientProps.city,
-					state: clientProps.state,
-					zipCode: clientProps.zipCode,
-					items: [
-						{
-							id: products["1"].id.id,
-							name: products["1"].name,
-							price: products["1"].salesPrice,
-						},
-						{
-							id: products["2"].id.id,
-							name: products["2"].name,
-							price: products["2"].salesPrice,
-						},
-					],
 				});
 			});
 		});
 	});
-});

@@ -1,3 +1,4 @@
+import AddressClientDto from "../../domain/value-object/address-client.dto";
 import AddClientUseCase from "./add-client.usecase";
 
 const MockRepository = () => {
@@ -15,7 +16,8 @@ describe("Add Client Usecase unit test", () => {
     const input = {
       name: "Client 1",
       email: "x@x.com",
-      address: "Address 1",
+      document: "doc",
+      address: new AddressClientDto('street', '1', 'city', 'zipcode', 'state', 'complement'),
     };
 
     const result = await usecase.execute(input);

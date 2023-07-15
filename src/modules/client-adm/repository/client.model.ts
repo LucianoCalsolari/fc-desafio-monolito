@@ -1,4 +1,5 @@
 import { Column, Model, PrimaryKey, Table } from "sequelize-typescript";
+import AddressClientDto from "../domain/value-object/address-client.dto";
 
 @Table({
   tableName: "clients",
@@ -15,8 +16,26 @@ export class ClientModel extends Model {
   @Column({ allowNull: false })
   email: string;
 
-  @Column({ allowNull: false })
-  address: string;
+  @Column({allowNull: false})
+  declare document: string;
+  
+  @Column({allowNull: false})
+  declare street: string;
+
+  @Column({allowNull: false})
+  declare number: string;
+  
+  @Column({allowNull: false})
+  declare city: string;
+
+  @Column({allowNull: false})
+  declare zipCode: string;
+
+  @Column({allowNull: false})
+  declare state: string;
+
+  @Column({allowNull: false})
+  declare complement: string
 
   @Column({ allowNull: false })
   createdAt: Date;

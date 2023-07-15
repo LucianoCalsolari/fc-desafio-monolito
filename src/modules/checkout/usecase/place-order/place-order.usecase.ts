@@ -3,17 +3,18 @@ import UseCaseInterface from "../../../@shared/usecase/use-case.interface";
 import ClientAdmFacadeInterface from "../../../client-adm/facade/client-adm.facade.interface";
 import InvoiceFacadeInterface from "../../../invoice/facade/invoice.facade.interface";
 import PaymentFacadeInterface from "../../../payment/facade/facade.interface";
-import ProductAdmFacade from "../../../product-adm/facade/product-adm.facade";
 import ProductAdmFacadeInterface from "../../../product-adm/facade/product-adm.facade.interface";
 import StoreCatalogFacadeInterface from "../../../store-catalog/facade/store-catalog.facade.interface";
-import Client from "../../domain/domain/client.entity";
-import Order from "../../domain/domain/order.entity";
-import Product from "../../domain/domain/product.entity";
-import AddressDto from "../../domain/domain/value-object/AddressDto";
+import Client from "../../domain/client.entity";
+import Order from "../../domain/order.entity";
+import Product from "../../domain/product.entity";
+import AddressDto from "../../domain/value-object/addressdto";
 import CheckoutGateway from "../../gateway/checkout.gateway";
 import { PlaceOrderInputDto, PlaceOrderOutputDto } from "./place-order.dto";
 
-export class PlaceOrderUseCase implements UseCaseInterface {
+
+export default class PlaceOrderUseCase implements UseCaseInterface{
+    
   private _clientFacade: ClientAdmFacadeInterface;
   private _productFacade: ProductAdmFacadeInterface;
   private _catalogFacade: StoreCatalogFacadeInterface;
@@ -21,116 +22,98 @@ export class PlaceOrderUseCase implements UseCaseInterface {
   private _invoiceFacade: InvoiceFacadeInterface;
   private _paymentFacade: PaymentFacadeInterface;
 
-  constructor(catalogFacade: StoreCatalogFacadeInterface,
-    productFacade: ProductAdmFacade,
-    clientFacade: ClientAdmFacadeInterface,
-    repository: CheckoutGateway,
-    invoiceFacade: InvoiceFacadeInterface,
-    paymentFacade: PaymentFacadeInterface) {
-    this._clientFacade = clientFacade;
-    this._productFacade = productFacade;
-    this._catalogFacade = catalogFacade;
-    this._checkoutRepository = repository;
-    this._invoiceFacade = invoiceFacade;
-    this._paymentFacade = paymentFacade;
+
+  constructor(clientFacade: ClientAdmFacadeInterface,
+      productFacade: ProductAdmFacadeInterface,
+      catalogFacade: StoreCatalogFacadeInterface,
+      checkoutRepocitory: CheckoutGateway,
+      invoiceFacade: InvoiceFacadeInterface,
+      paymentFacade: PaymentFacadeInterface){
+      this._clientFacade = clientFacade;
+      this._productFacade = productFacade;
+      this._catalogFacade = catalogFacade;
+      this._checkoutRepository= checkoutRepocitory;
+      this._invoiceFacade = invoiceFacade;
+      this._paymentFacade = paymentFacade;
+
   }
 
   async execute(input: PlaceOrderInputDto): Promise<PlaceOrderOutputDto> {
-    const client = await this._clientFacade.find({ id: input.clientId });
-    if (!client) {
-      throw new Error("Client not found");
-    }
 
-    await this.validateProducts(input);
+      const client = await this._clientFacade.find({id: input.clientId})
+      if(!client){
+          throw new Error('Client not found')
+      }
 
-    const products = await Promise.all(
-      input.products.map((p) => this.getProduct(p.productId))
-    )
+      await this.validateProducts(input);
 
-    const myClient = new Client({
-      id: new Id(client.id),
-      name: client.name,
-      email: client.email,
-      address: new AddressDto(client.city, client.complement, client.number, client.state, client.street, client.zipCode),
-    });
+      const products = await Promise.all(
+          input.products.map((p) => this.getProduct(p.productId))
+      );
+      
+      const address = new AddressDto(client.address.street, client.address.number, client.address.city, client.address.zipCode, client.address.state, client.address.complement);
+      const myClient = new Client({
+          id: new Id(client.id),
+          name: client.name,
+          email: client.email,
+          document: client.document,
+          address: address
+      })
 
-    const order = new Order({
-      client: myClient,
-      products: products,
-    });
+      const order = new Order({client: myClient, products: products})
+      const payment = await this._paymentFacade.process({orderId: order.id.id, amount: order.total})
+      const items = products.map((p) => { return { id: null, name: p.name, price: p.salesPrice}})
 
-    const payment = await this._paymentFacade.process({
-      orderId: order.id.id,
-      amount: order.total,
-    });
-
-    const invoice =
-      payment.status === "appoved" ?
-        await this._invoiceFacade.create({
+      const invoiceInputDto = {
           name: client.name,
           document: client.document,
-          street: client.street,
-          complement: client.complement,
-          number:  client.number,
-          city: client.city,
-          state: client.state,
-          zipCode: client.zipCode,
-          items: products.map((p) => {
-            return {
-              id: p.id.id,
-              name: p.name,
-              price: p.salesPrice,
-            };
-          }),
-        }) : null;
-
-    payment.status === "approved" && order.approved();
-    this._checkoutRepository.addOrder(order);
-
-    return {
-      id: order.id.id,
-      invoiceId: payment.status === "approved" ? invoice.id : null,
-      status: order.status,
-      total: order.total,
-      products: order.products.map((p) => {
-        return {
-          productId: p.id.id,
-        };
-      }),
-    };
-
-  }
-
-  private async validateProducts(input: PlaceOrderInputDto): Promise<void> {
-    if (input.products.length === 0) {
-      throw new Error("No products selected");
-    }
-
-    //TODO separar para classe validate check stock
-    for (const p of input.products) {
-      const product = await this._productFacade.checkStock({
-        productId: p.productId,
-      });
-      if (product.stock <= 0) {
-        throw new Error(
-          `Product ${product.productId} is not available in stock`
-        );
+          street: client.address.street,
+          number: client.address.number,
+          complement: client.address.complement,
+          city: client.address.city,
+          state: client.address.state,
+          zipCode: client.address.zipCode,
+          items: items
       }
-    }
+
+      const invoice = payment.status === 'approved' ? await this._invoiceFacade.create(invoiceInputDto) : null;
+
+      payment.status === 'approved' && order.approved();
+      await this._checkoutRepository.addOrder(order);
+
+      return {
+          id: order.id.id,
+          invoiceId: payment.status === 'approved' ? invoice.id : null,
+          status: order.status, 
+          total: order.total,
+          products: order.products.map((p) => { return {productId: p.id.id}})
+      }
   }
 
-  private async getProduct(productId: string): Promise<Product> {
-    const product = await this._catalogFacade.find({ id: productId });
-    if (!product) {
-      throw new Error("Product not found");
-    }
-    const productProps = {
-      id: new Id(product.id),
-      name: product.name,
-      description: product.description,
-      salesPrice: product.salesPrice,
-    }
-    return new Product(productProps);
+  private async validateProducts(input: PlaceOrderInputDto): Promise<void>{
+      if(input.products.length === 0 ){
+          throw new Error('No products selected')
+      }
+
+      for(const p of input.products){
+          const product = await this._productFacade.checkStock({productId: p.productId});
+          if( product.stock <= 0){
+              throw new Error('Product 1 is not available in stock')
+          }
+      }
   }
 
+  private async getProduct(productId: string): Promise<Product>{
+      const product = await this._catalogFacade.find({id: productId});
+      if(!product){
+          throw new Error('Product not found')
+      }
+      return new Product({
+          id: new Id(product.id),
+          name: product.name,
+          description: product.description,
+          salesPrice: product.salesPrice
+      })
+  }
+  
 }
