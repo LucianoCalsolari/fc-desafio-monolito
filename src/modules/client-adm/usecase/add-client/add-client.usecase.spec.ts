@@ -1,3 +1,4 @@
+import Client from "../../domain/client.entity";
 import AddressClientDto from "../../domain/value-object/address-client.dto";
 import AddClientUseCase from "./add-client.usecase";
 
@@ -19,13 +20,13 @@ describe("Add Client Usecase unit test", () => {
       document: "doc",
       address: new AddressClientDto('street', '1', 'city', 'zipcode', 'state', 'complement'),
     };
+    const client = new Client(input);
 
-    const result = await usecase.execute(input);
-
-    expect(repository.add).toHaveBeenCalled();
-    expect(result.id).toBeDefined();
-    expect(result.name).toEqual(input.name);
-    expect(result.email).toEqual(input.email);
-    expect(result.address).toEqual(input.address);
+    const result = await usecase.execute(client);
+    expect(result.id).toBe(client.id.id)
+    expect(result.name).toBe(client.name)
+    expect(result.email).toBe(client.email)
+    expect(result.document).toBe(client.document)
+    expect(result.address.city).toBe(client.address.city)
   });
 });

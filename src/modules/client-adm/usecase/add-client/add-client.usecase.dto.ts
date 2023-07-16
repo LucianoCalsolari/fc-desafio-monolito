@@ -1,7 +1,8 @@
+import Id from "../../../@shared/domain/value-object/id.value-object";
 import AddressClientDto from "../../domain/value-object/address-client.dto";
 
 export interface AddClientInputDto {
-  id?: string;
+  id?: Id;
   name: string;
   email: string;
   document: string,

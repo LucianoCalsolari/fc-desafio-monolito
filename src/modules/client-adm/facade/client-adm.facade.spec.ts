@@ -56,8 +56,8 @@ describe("ClientAdmFacade test", () => {
         zipCode: 'zipcode',
         number: '2',
         city: 'city',
-        createAt: new Date(),
-        updateAt: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     });
 
     const clientFacade = ClientAdmFacadeFactory.create();
