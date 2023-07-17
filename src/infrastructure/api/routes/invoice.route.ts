@@ -5,7 +5,7 @@ import GenerateInvoiceUseCase from "../../../modules/invoice/usecase/generate/ge
 
 export const invoiceRoute = express.Router();
 
-invoiceRoute.post("/", async (req: Request, res: Response) => {
+invoiceRoute.get("/", async (req: Request, res: Response) => {
   const usecase = new GenerateInvoiceUseCase(new InvoiceRepository());
   try {
     const invoiceDto = {
