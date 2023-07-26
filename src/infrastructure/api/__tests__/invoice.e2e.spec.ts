@@ -55,7 +55,7 @@ describe('E2E test for invoice', () => {
         expect(response.body.id).toBeDefined();
         expect(response.body.name).toBe('jose')
         expect(response.body.items.length).toBe(1)
-        expect(response.body.total).toBe(130)
+        expect(response.body.total).toBe(100)
     }, 50000);
 
 });

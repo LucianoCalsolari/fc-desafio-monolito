@@ -67,10 +67,11 @@ describe('client adm facade test unit', () =>{
       };
       await productFacade.addProduct(inputProduct);
 
+      const useCase = CheckoutFacadeFactory.create();
+
       const findProductUseCase = StoreCatalogFacadeFactory.create()
       const products = await findProductUseCase.findAll();
 
-      const useCase = CheckoutFacadeFactory.create();
       const listProduct = products.products.map((p) => {
           return { productId: p.id}
       })

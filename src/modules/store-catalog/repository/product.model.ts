@@ -16,5 +16,5 @@ export default class ProductStoreModel extends Model {
   description: string;
 
   @Column({ allowNull: false })
-  salesPrice: number;
+  purchasePrice: number;
 }

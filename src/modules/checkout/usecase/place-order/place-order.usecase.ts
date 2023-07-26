@@ -75,7 +75,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface{
           zipCode: client.address.zipCode,
           items: items
       }
-
+    try{
       const invoice = payment.status === 'approved' ? await this._invoiceFacade.create(invoiceInputDto) : null;
 
       payment.status === 'approved' && order.approved();
@@ -88,6 +88,10 @@ export default class PlaceOrderUseCase implements UseCaseInterface{
           total: order.total,
           products: order.products.map((p) => { return {productId: p.id.id}})
       }
+    } catch (error) {
+        console.error('Erro ao criar invoice:', error);
+        throw error;
+}
   }
 
   private async validateProducts(input: PlaceOrderInputDto): Promise<void>{
