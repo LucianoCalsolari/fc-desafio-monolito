@@ -11,14 +11,14 @@ export default class CheckoutFacadeFactory{
       const clientFacade = ClientAdmFacadeFactory.create();
       const productFacade = ProductAdmFacadeFactory.create();
       const storeFacade = StoreCatalogFacadeFactory.create();
-      const checkoutRepository = new OrderRepository();
+      const orderRepository = new OrderRepository();
       const invoice = InvoiceFacadeFactory.create();
       const payment = PaymentFacadeFactory.create();
       const usecase = new PlaceOrderUseCase(
           clientFacade, 
           productFacade, 
           storeFacade, 
-          checkoutRepository,
+          orderRepository,
           invoice,
           payment);
       

@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import ProductStoreModel from "./product.model";
+import ProductModel from "./product.model";
 import ProductRepository from "./product.repository";
 import Id from "../../@shared/domain/value-object/id.value-object";
 import Product from "../domain/product.entity";
@@ -15,7 +15,7 @@ describe("ProductRepository test", () => {
       sync: { force: true },
     });
 
-    await sequelize.addModels([ProductStoreModel]);
+    await sequelize.addModels([ProductModel]);
     await sequelize.sync();
   });
 
@@ -24,14 +24,14 @@ describe("ProductRepository test", () => {
   });
 
   it("should find all products", async () => {
-    await ProductStoreModel.create({
+    await ProductModel.create({
       id: "1",
       name: "Product 1",
       description: "Description 1",
       salesPrice: 100,
     });
 
-    await ProductStoreModel.create({
+    await ProductModel.create({
       id: "2",
       name: "Product 2",
       description: "Description 2",
@@ -53,7 +53,7 @@ describe("ProductRepository test", () => {
   });
 
   it("should find a product", async () => {
-    await ProductStoreModel.create({
+    await ProductModel.create({
       id: "1",
       name: "Product 1",
       description: "Description 1",

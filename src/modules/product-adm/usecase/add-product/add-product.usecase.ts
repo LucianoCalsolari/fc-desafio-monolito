@@ -6,8 +6,8 @@ import { AddProductInputDto, AddProductOutputDto } from "./add-product.dto";
 export default class AddProductUseCase {
   private _productRepository: ProductGateway;
 
-  constructor(_productRepository: ProductGateway) {
-    this._productRepository = _productRepository;
+  constructor(productRepository: ProductGateway) {
+    this._productRepository = productRepository;
   }
 
   async execute(input: AddProductInputDto): Promise<AddProductOutputDto> {

@@ -5,7 +5,7 @@ import AddressClientDto from "../domain/value-object/address-client.dto";
   tableName: "clients",
   timestamps: false,
 })
-export class ClientModel extends Model {
+export default class ClientModel extends Model {
   @PrimaryKey
   @Column({ allowNull: false })
   id: string;

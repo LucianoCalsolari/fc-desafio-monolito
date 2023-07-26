@@ -26,7 +26,7 @@ invoiceRoute.get("/", async (req: Request, res: Response) => {
   }
 });
 
-invoiceRoute.get("/invoiceId", async (req: Request, res: Response) => {
+invoiceRoute.get("/:invoiceId", async (req: Request, res: Response) => {
   const usecase = new FindInvoiceUseCase(new InvoiceRepository());
   const output = await usecase.execute({id: req.params.invoiceId});
 

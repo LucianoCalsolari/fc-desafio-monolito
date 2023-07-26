@@ -2,7 +2,7 @@ import Id from "../../@shared/domain/value-object/id.value-object";
 import Client from "../domain/client.entity";
 import AddressClientDto from "../domain/value-object/address-client.dto";
 import ClientGateway from "../gateway/client.gateway";
-import { ClientModel } from "./client.model";
+import ClientModel from "./client.model";
 import ClientEntity from "../domain/client.entity";
 
 export default class ClientRepository implements ClientGateway {

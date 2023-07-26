@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import InvoiceFacadeFactory from "../factory/invoice.facade.factory";
-import { InvoiceItemModel } from "../repository/transaction.item.model";
-import { InvoiceModel } from "../repository/transaction.model";
+import InvoiceItemModel from "../repository/transaction.item.model";
+import InvoiceModel from "../repository/transaction.model";
 import InvoiceRepository from "../repository/transaction.repository";
 import FindInvoiceUseCase from "../usecase/find/find-invoice.usecase";
 import GenerateInvoiceUseCase from "../usecase/generate/generate-invoice.usecase";

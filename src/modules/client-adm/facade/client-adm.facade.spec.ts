@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize-typescript";
 import Id from "../../@shared/domain/value-object/id.value-object";
 import AddressClientDto from "../domain/value-object/address-client.dto";
 import ClientAdmFacadeFactory from "../factory/client-adm.facade.factory";
-import { ClientModel } from "../repository/client.model";
+import ClientModel from "../repository/client.model";
 
 describe("ClientAdmFacade test", () => {
   let sequelize: Sequelize;

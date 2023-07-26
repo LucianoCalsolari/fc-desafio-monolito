@@ -1,5 +1,5 @@
 import { Column, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { InvoiceModel } from "../../invoice/repository/transaction.model";
+import InvoiceModel from "../../invoice/repository/transaction.model";
 import OrderModel from "./order.model";
 
 @Table({

@@ -1,19 +1,19 @@
 import { Sequelize } from "sequelize-typescript";
-import Id from "../../@shared/domain/value-object/id.value-object";
-import AddressClientDto from "../../client-adm/domain/value-object/address-client.dto";
-import ClientAdmFacadeFactory from "../../client-adm/factory/client-adm.facade.factory";
-import { ClientModel } from "../../client-adm/repository/client.model";
-import { InvoiceItemModel } from "../../invoice/repository/transaction.item.model";
-import { InvoiceModel } from "../../invoice/repository/transaction.model";
-import TransactionModel from "../../payment/repository/transaction.model";
-import ProductAdmFacadeFactory from "../../product-adm/factory/facade.factory";
-import { ProductModel } from "../../product-adm/repository/product.model";
-import StoreCatalogFacadeFactory from "../../store-catalog/factory/facade.factory";
+import OrderModel from "../repository/order.model";
+import ClientModel from "../../client-adm/repository/client.model";
+import InvoiceItemModel from "../../invoice/repository/transaction.item.model";
+import InvoiceModel from "../../invoice/repository/transaction.model";
+import ProductModel from "../../product-adm/repository/product.model";
 import ProductStoreModel from "../../store-catalog/repository/product.model";
+import ProductOrder from "../repository/product.order.model";
+import ClientAdmFacadeFactory from "../../client-adm/factory/client-adm.facade.factory";
+import ProductAdmFacadeFactory from "../../product-adm/factory/facade.factory";
 import CheckoutFacadeFactory from "../factory/checkout.facade.factory";
 import ClientOrder from "../repository/client.order.model";
-import OrderModel from "../repository/order.model";
-import ProductOrder from "../repository/product.order.model";
+import TransactionModel from "../../payment/repository/transaction.model";
+import Id from "../../@shared/domain/value-object/id.value-object";
+import AddressClientDto from "../../client-adm/domain/value-object/address-client.dto";
+import StoreCatalogFacadeFactory from "../../store-catalog/factory/facade.factory";
 
 describe('client adm facade test unit', () =>{
 
@@ -57,15 +57,15 @@ describe('client adm facade test unit', () =>{
       await clientUsecase.add(input);
       const client = await clientUsecase.find({id: '1'});
       
-      const productUsecase = ProductAdmFacadeFactory.create();
+      const productFacade = ProductAdmFacadeFactory.create();
       const inputProduct = {
-          id: 'p1',
+          id: '1',
           name: 'product 1',
           description: 'product description',
           purchasePrice: 1,
           stock: 1
       };
-      await productUsecase.addProduct(inputProduct);
+      await productFacade.addProduct(inputProduct);
 
       const findProductUseCase = StoreCatalogFacadeFactory.create()
       const products = await findProductUseCase.findAll();

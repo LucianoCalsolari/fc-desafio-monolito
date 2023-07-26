@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import CheckoutFacadeFactory from "../../../modules/checkout/factory/checkout.facade.factory";
-import PlaceOrderUseCase from "../../../modules/checkout/usecase/place-order/place-order.usecase";
 export const checkoutRoute = express.Router();
 
 checkoutRoute.post("/", async (req: Request, res: Response) => {

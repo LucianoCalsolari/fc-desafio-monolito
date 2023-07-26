@@ -3,8 +3,8 @@ import Address from "../domain/address.entity";
 import Invoice from "../domain/invoice";
 import Product from "../domain/product.entity";
 import InvoiceGateway from "../gateway/invoice.gateway";
-import { InvoiceItemModel } from "./transaction.item.model";
-import { InvoiceModel } from "./transaction.model";
+import InvoiceItemModel from "./transaction.item.model";
+import InvoiceModel from "./transaction.model";
 
 export default class InvoiceRepository implements InvoiceGateway {
   async create(input: Invoice): Promise<void> {
