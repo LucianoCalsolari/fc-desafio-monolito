@@ -9,9 +9,7 @@ export default class FindAllProductsUseCase{
   async execute(): Promise<FindAllProductOutputDto> {
     try {
       const result = await this.productRepository.findAll();
-      if(result.length == 0){ 
-        console.error('consulta FindAllProducts nao retornou resultados');
-      }
+      
       return {
           products: result.map((product) => {
               return {

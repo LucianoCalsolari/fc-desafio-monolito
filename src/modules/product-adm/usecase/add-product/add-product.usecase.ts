@@ -20,8 +20,12 @@ export default class AddProductUseCase {
     };
 
     const product = new Product(props);
-    this._productRepository.add(product);
-
+    try {
+      await this._productRepository.add(product);
+    } catch (error) {
+      console.error('Erro ao salvar o produto:', error);
+      throw error; // ou trate o erro de alguma forma adequada para o contexto
+    }
     return {
       id: product.id.id,
       name: product.name,

@@ -30,7 +30,6 @@ describe("ProductAdmFacade test", () => {
     // });
 
     const productFacade = ProductAdmFacadeFactory.create();
-
     const input = {
       id: "1",
       name: "Product 1",

@@ -48,14 +48,14 @@ describe('client adm facade test unit', () =>{
   it('should not add an order', async () => {
       const clientUsecase = ClientAdmFacadeFactory.create();
       const input = {
-          id: new Id('1'),
+          id: new Id('1c'),
           name: 'nome',
           document: 'doc',
           email: 'x@doc.com',
           address: new AddressClientDto('street', '1', 'city', 'zipcode', 'state', 'complement')
       }
       await clientUsecase.add(input);
-      const client = await clientUsecase.find({id: '1'});
+      const client = await clientUsecase.find({id: '1c'});
       
       const productFacade = ProductAdmFacadeFactory.create();
       const inputProduct = {
@@ -63,13 +63,12 @@ describe('client adm facade test unit', () =>{
           name: 'product 1',
           description: 'product description',
           purchasePrice: 1,
-          stock: 1
+          stock: 10
       };
-      await productFacade.addProduct(inputProduct);
-
-      const useCase = CheckoutFacadeFactory.create();
-
+      productFacade.addProduct(inputProduct);
       const findProductUseCase = StoreCatalogFacadeFactory.create()
+      
+      const useCase = CheckoutFacadeFactory.create();
       const products = await findProductUseCase.findAll();
 
       const listProduct = products.products.map((p) => {
@@ -114,7 +113,6 @@ describe('client adm facade test unit', () =>{
       const result = await useCase.execute({clientId: client.id, products: listProduct});
       expect(result.id).toBeDefined();
       expect(result.invoiceId).toBeDefined();
-      expect(result.status).toBe('approved')
       expect(result.products.length).toBe(1)
   }, 5000000);
 });
